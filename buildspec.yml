@@ -1,13 +1,25 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
-        nodejs: 10
+      node: 10
+
+  pre_build:
+    commands:
+      - pip install --user aws-sam-cli
+      - USER_BASE_PATH=$(python -m site --user-base)
+      - export PATH=$PATH:$USER_BASE_PATH/bin
+
   build:
     commands:
-      - echo hello
+      - for i in $(find | grep 'tests/unit$' | cut -d'/' -f1-3); do cd "$i"; npm install; npm run test; cd ../..; done
+
+  # post_build:
+  #   commands:
+  #     - sam package --output-template-file packaged.yaml --s3-bucket my-code-pipeline-bucketz
+
 # artifacts:
 #   type: zip
 #   files:
-#     - template.yml
-#     - outputtemplate.yml
+#     - packaged.yaml
