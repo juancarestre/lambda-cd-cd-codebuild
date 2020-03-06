@@ -23,7 +23,7 @@ pipeline {
         }
         stage("Docker build"){
             steps{
-                sh 'set -e; for i in $(find | grep \'tests/unit$\' | cut -d\'/\' -f1-3); do cd "$i"; npm install; npm run test; cd ../..; done)'
+                sh '(set -e; for i in $(find | grep \'tests/unit$\' | cut -d\'/\' -f1-3); do cd "$i"; npm install; npm run test; cd ../..; done)'
                 sh '(set -e; for i in $(find | grep \'events/\' | cut -d\'/\' -f1-2); do cd "$i"; sam build; sam package --s3-bucket awscoursepetosbucket --s3-prefix builds; cd ..; done)'
             }
         }      
